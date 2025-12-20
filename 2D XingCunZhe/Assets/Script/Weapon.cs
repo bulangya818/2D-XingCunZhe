@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class Weapon : MonoBehaviour
     {
         player = GameManager.instance.player;
     }
-    
+
 
     // Update is called once per frame
     void Update()
@@ -53,7 +54,7 @@ public class Weapon : MonoBehaviour
 
         if (id == 0)
             Batch();
-        
+
         player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
     }
 
@@ -86,9 +87,15 @@ public class Weapon : MonoBehaviour
                 speed = 0.4f;
                 break;
         }
+
+        Hand hand = player.hands[(int)data.itemType];
+        hand.spriter.sprite = data.hand;
+        hand.gameObject.SetActive(true);
+
         player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
     }
-    
+
+
     void Batch()
     {
         for (int index = 0; index < count; index++)

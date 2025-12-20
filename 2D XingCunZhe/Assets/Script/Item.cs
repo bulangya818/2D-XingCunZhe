@@ -22,7 +22,6 @@ public class Item : MonoBehaviour
 
         Text[] texts = GetComponentsInChildren<Text>();
         textLevel = texts[0];
-        
     }
 
     private void LateUpdate()
@@ -49,10 +48,10 @@ public class Item : MonoBehaviour
 
                     nextDamage += data.baseDamage * data.damages[level];
                     nextCount += data.counts[level];
-                    
+
                     weapon.LevelUp(nextDamage, nextCount);
                 }
-                
+
                 level++;
                 break;
             case ItemData.ItemType.Glove:
@@ -68,7 +67,7 @@ public class Item : MonoBehaviour
                     float nextRate = data.damages[level];
                     gear.LevelUp(nextRate);
                 }
-                
+
                 level++;
                 break;
             case ItemData.ItemType.Heal:
