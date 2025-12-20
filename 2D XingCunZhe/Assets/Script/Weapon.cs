@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,13 +17,9 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponentInParent<Player>();
+        player = GameManager.instance.player;
     }
-
-    private void Start()
-    {
-        Init();
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -41,6 +36,7 @@ public class Weapon : MonoBehaviour
                     timer = 0f;
                     Fire();
                 }
+
                 break;
         }
 
@@ -56,13 +52,30 @@ public class Weapon : MonoBehaviour
         this.count += count;
 
         if (id == 0)
-        {
             Batch();
-        }
+        
+        player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
     }
 
-    public void Init()
+    public void Init(ItemData data)
     {
+        name = "Weapon" + data.itemId;
+        transform.parent = player.transform;
+        transform.localPosition = Vector3.zero;
+
+        id = data.itemId;
+        damage = data.baseDamage;
+        count = data.baseCount;
+
+        for (int index = 0; index < GameManager.instance.pool.prefabs.Length; index++)
+        {
+            if (data.projectile == GameManager.instance.pool.prefabs[index])
+            {
+                prefabId = index;
+                break;
+            }
+        }
+
         switch (id)
         {
             case 0:
@@ -70,11 +83,12 @@ public class Weapon : MonoBehaviour
                 Batch();
                 break;
             default:
-                speed = 0.3f;
+                speed = 0.4f;
                 break;
         }
+        player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
     }
-
+    
     void Batch()
     {
         for (int index = 0; index < count; index++)
@@ -96,22 +110,22 @@ public class Weapon : MonoBehaviour
             Vector3 rotVec = Vector3.forward * 360 * index / count;
             bullet.Rotate(rotVec);
             bullet.Translate(bullet.up * 1.5f, Space.World);
-            bullet.GetComponent<Bullet>().Init(damage, -1,Vector3.zero);
+            bullet.GetComponent<Bullet>().Init(damage, -1, Vector3.zero);
         }
     }
 
     void Fire()
     {
         if (!player.scanner.nearestTarget)
-       return;
+            return;
 
         Vector3 targetPos = player.scanner.nearestTarget.position;
         Vector3 dir = targetPos - transform.position;
         dir = dir.normalized;
-        
+
         Transform bullet = GameManager.instance.pool.Get(prefabId).transform;
         bullet.position = transform.position;
         bullet.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-        bullet.GetComponent<Bullet>().Init(damage,count,dir);
+        bullet.GetComponent<Bullet>().Init(damage, count, dir);
     }
 }
