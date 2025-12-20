@@ -8,11 +8,11 @@ public class Player : MonoBehaviour
     public float speed;
     public Scanner scanner;
     public Hand[] hands;
-    
+
     private Rigidbody2D rigid;
     private SpriteRenderer spriter;
     private Animator anim;
-    
+
     //Awake is called before the first frame update
     void Awake()
     {
@@ -25,21 +25,29 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManager.instance.isLive)
+            return;
+
         inputVec.x = Input.GetAxisRaw("Horizontal");
         inputVec.y = Input.GetAxisRaw("Vertical");
     }
 
     private void FixedUpdate()
     {
-       
-        Vector2 nextVec =inputVec.normalized * speed * Time.fixedDeltaTime;
-        rigid.MovePosition(rigid.position + nextVec);
+        if (!GameManager.instance.isLive)
+            return;
 
+        Vector2 nextVec = inputVec.normalized * speed * Time.fixedDeltaTime;
+        rigid.MovePosition(rigid.position + nextVec);
     }
-    
+
     private void LateUpdate()
     {
+        if (!GameManager.instance.isLive)
+            return;
+        
         anim.SetFloat("Speed", inputVec.magnitude);
+        
         if (inputVec.x != 0)
         {
             spriter.flipX = inputVec.x < 0;
