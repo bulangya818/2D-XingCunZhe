@@ -6,18 +6,19 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    [Header("# Game Control")] 
+    [Header("# Game Control")]
     public bool isLive;
     public float gameTime;
     public float maxGameTime = 2 * 10f;
-    [Header("# Player Info")] 
+    [Header("# Player Info")]
+    public int playerId;
     public float health;
     public float maxHealth = 100;
     public int level;
     public int kill;
     public int exp;
     public int[] nextExp = { 3, 5, 10, 100, 150, 210, 280, 360, 450, 600 };
-    [Header("# Game Ovjiect")] 
+    [Header("# Game Ovjiect")]
     public PoolManager pool;
     public Player player;
     public LevelUp uiLevelUp;
@@ -29,10 +30,13 @@ public class GameManager : MonoBehaviour
         instance = this;
     }
 
-    public void GameStart()
+    public void GameStart(int id)
     {
+        playerId = id;
         health = maxHealth;
-        uiLevelUp.Select(0);
+        
+        player.gameObject.SetActive(true);
+        uiLevelUp.Select(playerId % 2);
         Resume();
     }
 
