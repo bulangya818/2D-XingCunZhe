@@ -58,16 +58,16 @@ public class GameManager : MonoBehaviour
         uiResult.Lose();
         Stop();
         
-        uiResult.gameObject.SetActive(false);
+        AudioManager.instance.PlayBgm(false);
         AudioManager.instance.PlaySfx(AudioManager.Sfx.Lose);
     }
     
-    public void GameVictroy()
+    public void GameVictory()
     {
-        StartCoroutine(GameVictroyRoutine());
+        StartCoroutine(GameVictoryRoutine());
     }
 
-    IEnumerator GameVictroyRoutine()
+    IEnumerator GameVictoryRoutine()
     {
         isLive = false;
         enemyCleaner.SetActive(true);
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
         uiResult.Win();
         Stop();
         
-        uiResult.gameObject.SetActive(false);
+        AudioManager.instance.PlayBgm(false);
         AudioManager.instance.PlaySfx(AudioManager.Sfx.Win);
     }
     public void GameRetry()
@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour
         if (gameTime > maxGameTime)
         {
             gameTime = maxGameTime;
-            GameVictroy();
+            GameVictory();
         }
     }
 
